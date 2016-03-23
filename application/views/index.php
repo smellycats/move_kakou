@@ -67,13 +67,10 @@
                         <i class="fa fa-user fa-fw"></i>  <i class="fa fa-caret-down"></i>
                     </a>
                     <ul class="dropdown-menu dropdown-user">
-                        <li><a href="#"><i class="fa fa-user fa-fw"></i> 用户配置</a>
-                        </li>
-                        <li><a href="#"><i class="fa fa-gear fa-fw"></i> 设置</a>
-                        </li>
+                        <li><a href="#"><i class="fa fa-user fa-fw"></i> 用户配置</a></li>
+                        <li><a href="#"><i class="fa fa-gear fa-fw"></i> 设置</a></li>
                         <li class="divider"></li>
-                        <li><a href="<?php echo site_url(''); ?>"><i class="fa fa-sign-out fa-fw"></i> 退出</a>
-                        </li>
+                        <li><a href="<?php echo site_url(''); ?>"><i class="fa fa-sign-out fa-fw"></i> 退出</a></li>
                     </ul>
                     <!-- /.dropdown-user -->
                 </li>
@@ -104,33 +101,33 @@
                 </div>
                 <!-- /.col-lg-12 -->
             </div>
-            <!--
+            
             <div class="row">
                 <div class="col-md-12">
                     <div class="col-md-5">
                         <div class="input-group">
-                            <label for="dtp_input1" class="col-md-3 control-label">开始时间</label>
-                            <div class="input-group date form_datetime col-md-9" data-date="" data-date-format="yyyy-mm-dd hh:ii:ss" data-link-field="dtp_input1">
+                            <label for="st" class="col-md-3 control-label">开始时间</label>
+                            <div id="st" class="input-group date form_datetime col-md-9" data-date="" data-date-format="yyyy-mm-dd hh:ii:ss" data-link-field="st">
                                 <input class="form-control" size="32" type="text" value="">
                                 <span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span>
                             </div>
-                            <input type="hidden" id="dtp_input1" value="" /><br/>
+                            <!-- <input type="hidden" id="st" value="" /><br/> -->
                         </div>
                     </div>
                     <div class="col-md-5">
                         <div class="input-group">
-                            <label for="dtp_input2" class="col-md-3 control-label">结束时间</label>
-                            <div class="input-group date form_datetime col-md-9" data-date="" data-date-format="yyyy-mm-dd hh:ii:ss" data-link-field="dtp_input2">
+                            <label for="et" class="col-md-3 control-label">结束时间</label>
+                            <div id="et" class="input-group date form_datetime col-md-9" data-date="" data-date-format="yyyy-mm-dd hh:ii:ss" data-link-field="et">
                                 <input class="form-control" size="32" type="text" value="">
                                 <span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span>
                             </div>
-                            <input type="hidden" id="dtp_input2" value="" /><br/>
+                            <!-- <input type="hidden" id="et" value="" /><br/> -->
                         </div>
                     </div>
-                    <button type="button" class="btn btn-primary">查询</button>
+                    <button type="button" class="btn btn-primary" onclick="test()">查询</button>
                 </div>
             </div>
-            -->
+            
             <!-- /.row -->
             <div class="row">
                 <div class="col-lg-12">
@@ -186,7 +183,7 @@
         });
 
         $('#table').bootstrapTable({
-            url: '<?php echo site_url("index/load_data?mike=123&jack=肥仔"); ?>',
+            url: '<?php echo site_url("index/load_data?"); ?>'+'st='+$("#st").val()+'&et='+$("#et").val(),
             pagination: true,
             sidePagination: 'server',
             rowStyle: 'rowStyle',
@@ -215,6 +212,12 @@
                 }
             }
         });
+
+        function test() {
+            var url = '<?php echo site_url("index/load_data?"); ?>'+'st='+$("#st").val()+'&et='+$("#et").val();
+            alert(url);
+            $('#table').bootstrapTable('refresh',{url: url});
+        }
 
         /*
         function rowStyle(row, index) {
