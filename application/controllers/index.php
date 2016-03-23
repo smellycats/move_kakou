@@ -26,6 +26,8 @@ class Index extends CI_Controller
         $this->load->config('myconfig');
 
         $this->load->library('session');
+
+        $this->load->model('Mkakou');
     }
     
     /**
@@ -35,8 +37,8 @@ class Index extends CI_Controller
      */
     public function index()
     {
-        #$this->load->view('login');
-        $this->admin();
+        $this->load->view('login');
+        //$this->admin();
     }
 
     /**
@@ -90,20 +92,43 @@ class Index extends CI_Controller
     {
         $input_data = json_decode(trim(file_get_contents('php://input')), true);
 
-
-        echo json_encode(array('success'=>true, 'msg'=>'done'));
+        echo json_encode(array('success' => true, 'msg' => 'done'));
     }
 
     public function load_data()
     {
-        $items = [
-            array('id'=> 1, 'date_created'=> '2016-03-21 12:34:56', 'hphm'=>'粤L12345', 'place_name'=>'水门'),
-            array('id'=> 2, 'date_created'=> '2016-03-21 12:34:56', 'hphm'=>'粤L12345', 'place_name'=>'水门'),
-            array('id'=> 3, 'date_created'=> '2016-03-21 12:34:56', 'hphm'=>'粤L12345', 'place_name'=>'水门'),
-            array('id'=> 4, 'date_created'=> '2016-03-21 12:34:56', 'hphm'=>'粤L12345', 'place_name'=>'水门')
-        ];
+        $this->get_carinfo();
+    }
 
-        echo json_encode(array('total_count'=> 4, 'items'=> $items));
+    /**
+     * 获取car_info表数据
+     * 
+     * @return void
+     */
+    public function get_carinfo()
+    {
+        $q_arr = $this->input->get(NULL, true);
+
+        if (empty(@$q_arr['st'])) {
+            $q_arr['st'] = mdate("%Y-%m-%d %H:%i:%s", strtotime("-2 hours"));
+        }
+        if (empty(@$q_arr['et'])) {
+            $q_arr['et'] = mdate("%Y-%m-%d %H:%i:%s");
+        }
+        $query = $this->Mkakou->getCarInfo($q_arr, $q_arr['limit'], $q_arr['offset']);
+        $total_count = $this->Mkakou->getCarInfo($q_arr, 0, $q_arr['offset'])->row()->sum;
+        $items = [];
+        foreach($query->result_array() as $id => $row) {
+            $items[$id]['id'] = $q_arr['offset']+$id+1;
+            $items[$id]['date_upload'] = $row['date_upload'];
+            $items[$id]['date_created'] = $row['date_created'];
+            $items[$id]['hphm'] = $row['hphm'];
+            $items[$id]['wc'] = $row['wc'];
+            $items[$id]['place_name'] = $row['place_name'];
+            $items[$id]['img_path'] = $row['img_path'];
+        }
+
+        echo json_encode(array('total_count'=> $total_count, 'items'=> $items));
     }
 
 }
